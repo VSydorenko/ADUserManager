@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QStringList>
+#include <functional>
 #include <QDebug>
 
 QString JsonHelper::jsonToString(const QJsonObject& json, bool indented) {
@@ -86,21 +87,21 @@ void JsonHelper::setObjectAtPath(QJsonObject& root, const QString& path, const Q
         return;
     }
     
-    // Navigate to the parent of the target location
-    QJsonObject* current = &root;
-    for (int i = 0; i < parts.size() - 1; ++i) {
-        const QString& part = parts[i];
-        
-        if (!current->contains(part) || !(*current)[part].isObject()) {
-            // Create missing objects along the path
-            (*current)[part] = QJsonObject();
+    // Recursively create missing objects along the path
+    std::function<void(QJsonObject&, int)> setHelper = [&](QJsonObject& obj, int index) {
+        const QString& part = parts[index];
+
+        if (index == parts.size() - 1) {
+            obj[part] = value;
+            return;
         }
-        
-        current = reinterpret_cast<QJsonObject*>(&(*current)[part]);
-    }
-    
-    // Set the value at the final location
-    (*current)[parts.last()] = value;
+
+        QJsonObject child = obj.value(part).toObject();
+        setHelper(child, index + 1);
+        obj[part] = child;
+    };
+
+    setHelper(root, 0);
 }
 
 QJsonObject JsonHelper::loadFromFile(const QString& filePath) {
