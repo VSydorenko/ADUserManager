@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreateUsersDialog</class>
+ <widget class="QDialog" name="CreateUsersDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Create Users</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <item>
+    <widget class="QGroupBox" name="serverGroupBox">
+     <property name="title">
+      <string>Server</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QComboBox" name="serverComboBox"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="inputGroupBox">
+     <property name="title">
+      <string>User List</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="instructionLabel">
+        <property name="text">
+         <string>Enter a list of Ukrainian names (one per line):</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTextEdit" name="userListEdit">
+        <property name="placeholderText">
+         <string>Enter names here...
+Example:
+Іван Петренко
+Олена Коваленко</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="processButton">
+     <property name="text">
+      <string>Process with LLM</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="resultsGroupBox">
+     <property name="title">
+      <string>Processing Results</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QTableWidget" name="resultsTable">
+        <column>
+         <property name="text">
+          <string>Original</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Normalized</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>First Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Last Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Login</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="createPasswordsCheckbox">
+        <property name="text">
+         <string>Generate random passwords</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="buttonLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="createButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Create Users</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

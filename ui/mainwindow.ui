@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>AD User Manager</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QSplitter" name="mainSplitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QTreeWidget" name="serverTreeWidget">
+       <column>
+        <property name="text">
+         <string>Servers</string>
+        </property>
+       </column>
+      </widget>
+      <widget class="QSplitter" name="rightSplitter">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QTableWidget" name="userTableWidget">
+        <column>
+         <property name="text">
+          <string>Full Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Login</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Status</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Created Date</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QWidget" name="userDetailsWidget" native="true"/>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionCreateUsers"/>
+    <addaction name="separator"/>
+    <addaction name="actionExportUsers"/>
+    <addaction name="separator"/>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionRefresh"/>
+    <addaction name="separator"/>
+    <addaction name="actionShowLog"/>
+   </widget>
+   <widget class="QMenu" name="menuUser">
+    <property name="title">
+     <string>User</string>
+    </property>
+    <addaction name="actionDeactivateUser"/>
+    <addaction name="actionChangePassword"/>
+    <addaction name="actionCopyRDP"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuUser"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionCreateUsers"/>
+   <addaction name="actionRefresh"/>
+   <addaction name="separator"/>
+   <addaction name="actionDeactivateUser"/>
+   <addaction name="actionChangePassword"/>
+   <addaction name="actionCopyRDP"/>
+   <addaction name="separator"/>
+   <addaction name="actionSettings"/>
+  </widget>
+  <action name="actionCreateUsers">
+   <property name="text">
+    <string>Create Users...</string>
+   </property>
+  </action>
+  <action name="actionExportUsers">
+   <property name="text">
+    <string>Export Users...</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings...</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh Servers</string>
+   </property>
+  </action>
+  <action name="actionShowLog">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Log</string>
+   </property>
+  </action>
+  <action name="actionDeactivateUser">
+   <property name="text">
+    <string>Deactivate User</string>
+   </property>
+  </action>
+  <action name="actionChangePassword">
+   <property name="text">
+    <string>Change Password...</string>
+   </property>
+  </action>
+  <action name="actionCopyRDP">
+   <property name="text">
+    <string>Copy RDP Connection Info</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About...</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
