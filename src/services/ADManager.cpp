@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QtCore/QRegularExpression>
 
 ADManager::ADManager(QObject* parent) : QObject(parent), m_connected(false) {
 #ifdef _WIN32
@@ -209,18 +210,19 @@ UserInfo ADManager::getUserInfo(const QString& userDN) {
 #ifdef _WIN32
     // Implementation for fetching user information from AD
     // This would query AD for the user object and its attributes
-    
-    // Extract server name from the DN
-    QRegExp serverRegex("OU=([^,]+),");
-    if (serverRegex.indexIn(userDN) != -1) {
-        QString serverName = serverRegex.cap(1);
+      // Extract server name from the DN
+    QRegularExpression serverRegex("OU=([^,]+),");
+    QRegularExpressionMatch serverMatch = serverRegex.match(userDN);
+    if (serverMatch.hasMatch()) {
+        QString serverName = serverMatch.captured(1);
         userInfo.setServerName(serverName);
     }
     
     // Extract login from the DN
-    QRegExp loginRegex("CN=([^,]+),");
-    if (loginRegex.indexIn(userDN) != -1) {
-        QString login = loginRegex.cap(1);
+    QRegularExpression loginRegex("CN=([^,]+),");
+    QRegularExpressionMatch loginMatch = loginRegex.match(userDN);
+    if (loginMatch.hasMatch()) {
+        QString login = loginMatch.captured(1);
         userInfo.setLogin(login);
     }
     
@@ -452,9 +454,8 @@ QString ADManager::generateUniqueLogin(const QString& firstName, const QString& 
     
     // Basic algorithm: first letter of first name + last name
     QString baseLogin = firstName.left(1).toUpper() + lastName;
-    
-    // Remove spaces and special characters
-    baseLogin.remove(QRegExp("[^a-zA-Z0-9]"));
+      // Remove spaces and special characters
+    baseLogin.remove(QRegularExpression("[^a-zA-Z0-9]"));
     
     // If the login already exists, append a number
     QString login = baseLogin;

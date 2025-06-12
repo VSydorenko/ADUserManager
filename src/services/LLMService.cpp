@@ -32,12 +32,12 @@ void LLMService::processUserList(const QString& rawUserList) {
         emit processingError("API key or endpoint not set");
         return;
     }
-    
     QJsonObject requestData = buildPrompt(rawUserList);
     QJsonDocument doc(requestData);
     QByteArray data = doc.toJson();
     
-    QNetworkRequest request(QUrl(m_endpoint));
+    // Используем фигурные скобки вместо круглых, чтобы избежать "most vexing parse"
+    QNetworkRequest request{QUrl(m_endpoint)};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", QString("Bearer %1").arg(m_apiKey).toUtf8());
     

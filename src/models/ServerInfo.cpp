@@ -1,4 +1,5 @@
 #include "models/ServerInfo.h"
+#include <QJsonArray>
 
 ServerInfo::ServerInfo() : m_rdpPort(3389), m_environment("dev") {
 }

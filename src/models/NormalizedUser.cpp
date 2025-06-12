@@ -1,4 +1,5 @@
 #include "models/NormalizedUser.h"
+#include <QStringList>
 
 NormalizedUser::NormalizedUser() : m_isValid(false) {
 }
