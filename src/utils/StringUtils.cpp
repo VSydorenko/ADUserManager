@@ -87,11 +87,69 @@ QString StringUtils::transliterateUkrToLatin(const QString& ukrText) {
 }
 
 QString StringUtils::transliterateLatinToUkr(const QString& latinText) {
-    // This is a more complex operation due to multi-character transliteration
-    // For simplicity, we'll implement a basic version
+    // Создаем мап для обратной транслитерации (латиница -> кириллица)
+    // Обратите внимание на сложные случаи (многосимвольные комбинации)
     
-    // Not fully implemented in this example
-    return latinText;
+    // Сначала обрабатываем многосимвольные комбинации
+    QString result = latinText;
+    
+    // Специальные комбинации (многосимвольные)
+    result.replace("Shch", "Щ");
+    result.replace("shch", "щ");
+    result.replace("Ye", "Є");
+    result.replace("ye", "є");
+    result.replace("Yi", "Ї");
+    result.replace("yi", "ї");
+    result.replace("Yu", "Ю");
+    result.replace("yu", "ю");
+    result.replace("Ya", "Я");
+    result.replace("ya", "я");
+    result.replace("Kh", "Х");
+    result.replace("kh", "х");
+    result.replace("Ts", "Ц");
+    result.replace("ts", "ц");
+    result.replace("Ch", "Ч");
+    result.replace("ch", "ч");
+    result.replace("Sh", "Ш");
+    result.replace("sh", "ш");
+    result.replace("Zh", "Ж");
+    result.replace("zh", "ж");
+    
+    // Односимвольные соответствия
+    static QMap<QChar, QChar> singleCharMap = {
+        {'A', QChar(0x0410)}, {'a', QChar(0x0430)}, // А, а
+        {'B', QChar(0x0411)}, {'b', QChar(0x0431)}, // Б, б
+        {'V', QChar(0x0412)}, {'v', QChar(0x0432)}, // В, в
+        {'G', QChar(0x0413)}, {'g', QChar(0x0433)}, // Г, г
+        {'D', QChar(0x0414)}, {'d', QChar(0x0434)}, // Д, д
+        {'E', QChar(0x0415)}, {'e', QChar(0x0435)}, // Е, е
+        {'Z', QChar(0x0417)}, {'z', QChar(0x0437)}, // З, з
+        {'Y', QChar(0x0418)}, {'y', QChar(0x0438)}, // И, и
+        {'I', QChar(0x0406)}, {'i', QChar(0x0456)}, // І, і
+        {'K', QChar(0x041A)}, {'k', QChar(0x043A)}, // К, к
+        {'L', QChar(0x041B)}, {'l', QChar(0x043B)}, // Л, л
+        {'M', QChar(0x041C)}, {'m', QChar(0x043C)}, // М, м
+        {'N', QChar(0x041D)}, {'n', QChar(0x043D)}, // Н, н
+        {'O', QChar(0x041E)}, {'o', QChar(0x043E)}, // О, о
+        {'P', QChar(0x041F)}, {'p', QChar(0x043F)}, // П, п
+        {'R', QChar(0x0420)}, {'r', QChar(0x0440)}, // Р, р
+        {'S', QChar(0x0421)}, {'s', QChar(0x0441)}, // С, с
+        {'T', QChar(0x0422)}, {'t', QChar(0x0442)}, // Т, т
+        {'U', QChar(0x0423)}, {'u', QChar(0x0443)}, // У, у
+        {'F', QChar(0x0424)}, {'f', QChar(0x0444)}, // Ф, ф
+    };
+    
+    // Заменяем односимвольные соответствия
+    QString finalResult;
+    for (const QChar& c : result) {
+        if (singleCharMap.contains(c)) {
+            finalResult.append(singleCharMap[c]);
+        } else {
+            finalResult.append(c);
+        }
+    }
+    
+    return finalResult;
 }
 
 QString StringUtils::toCamelCase(const QString& text, bool capitalizeFirstLetter) {
@@ -134,22 +192,55 @@ QString StringUtils::toKebabCase(const QString& text) {
 }
 
 QString StringUtils::generateLoginFromName(const QString& firstName, const QString& lastName) {
-    // First letter of first name + last name in Latin
-    QString firstLetter = transliterateUkrToLatin(firstName.left(1)).toUpper();
-    QString lastNameLatin = transliterateUkrToLatin(lastName);
+    // Генерация логина по схеме: первая буква имени + фамилия в латинице
     
-    // Remove any spaces or special characters
-    QString login = firstLetter + lastNameLatin;
+    // Убедимся, что имена стандартизированы
+    QString normalizedFirstName = normalizeUkrainianName(firstName);
+    QString normalizedLastName = normalizeUkrainianName(lastName);
+    
+    // Обработка составных имен через дефис - берем первые буквы обеих частей
+    QString firstLetters;
+    if (normalizedFirstName.contains('-')) {
+        QStringList parts = normalizedFirstName.split('-');
+        for (const QString& part : parts) {
+            if (!part.isEmpty()) {
+                firstLetters += part.left(1);
+            }
+        }
+    } else {
+        firstLetters = normalizedFirstName.left(1);
+    }
+    
+    // Транслитерация имени и фамилии
+    QString firstLetterLatin = transliterateUkrToLatin(firstLetters);
+    QString lastNameLatin = transliterateUkrToLatin(normalizedLastName);
+    
+    // Объединение и очистка от специальных символов
+    QString login = firstLetterLatin + lastNameLatin;
     return sanitizeLoginName(login);
 }
 
 QString StringUtils::sanitizeLoginName(const QString& login) {
     QString result;
     
-    // Keep only letters and numbers
+    // Оставляем только буквы и цифры, преобразуем к нижнему регистру для AD-совместимости
     for (const QChar& c : login) {
         if (c.isLetterOrNumber()) {
-            result += c;
+            result += c.toLower(); // Active Directory логины обычно в нижнем регистре
+        }
+    }
+    
+    // Проверка на длину для AD (обычно ограничена 20 символами)
+    if (result.length() > 20) {
+        result = result.left(20);
+    }
+    
+    // Убедимся, что логин не начинается с цифры (это может вызывать проблемы в некоторых системах)
+    if (!result.isEmpty() && result[0].isDigit()) {
+        result = "u" + result;
+        // Повторная проверка длины после добавления префикса
+        if (result.length() > 20) {
+            result = result.left(20);
         }
     }
     
@@ -188,10 +279,17 @@ QString StringUtils::removeSpecialCharacters(const QString& text, bool keepSpace
 bool StringUtils::isValidUkrainianName(const QString& name) {
     // Check if name contains Ukrainian characters
     static const QString ukrChars = "АаБбВвГгҐґДдЕеЄєЖжЗзИиІіЇїЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЬьЮюЯя'";
+    static const QRegularExpression validNamePattern(R"(^[\p{Cyrillic}'\s-]+$)");
     
+    // Проверка формата имени с помощью регулярного выражения
+    if (!validNamePattern.match(name).hasMatch()) {
+        return false;
+    }
+    
+    // Проверка на наличие специфических украинских символов
     bool hasUkrainianChar = false;
     for (const QChar& c : name) {
-        if (!c.isSpace() && !ukrChars.contains(c)) {
+        if (!c.isSpace() && c != '\'' && c != '-' && !ukrChars.contains(c)) {
             return false;
         }
         if (ukrChars.contains(c)) {
@@ -203,18 +301,43 @@ bool StringUtils::isValidUkrainianName(const QString& name) {
 }
 
 QString StringUtils::normalizeUkrainianName(const QString& name) {
-    // Basic normalization - remove extra spaces
+    // Базовая нормализация - удаление лишних пробелов
     QString normalized = name.simplified();
     
-    // Ensure proper capitalization - first letter of each word is uppercase
+    // Обработка апострофов (замена различных видов на стандартный)
+    normalized.replace(QChar(0x2019), QChar('\'')); // Right Single Quotation Mark
+    normalized.replace(QChar(0x02BC), QChar('\'')); // Modifier Letter Apostrophe
+    normalized.replace(QChar(0x02B9), QChar('\'')); // Modifier Letter Prime
+    
+    // Правильное форматирование дефисов между частями двойных имен и фамилий
+    normalized.replace(QRegularExpression("\\s*-\\s*"), "-");
+    
+    // Обеспечение правильной капитализации - первая буква каждого слова заглавная
     QStringList parts = normalized.split(' ', Qt::SkipEmptyParts);
     for (QString& part : parts) {
         if (!part.isEmpty()) {
-            part[0] = part[0].toUpper();
-            
-            // Make rest of the word lowercase
-            for (int i = 1; i < part.length(); ++i) {
-                part[i] = part[i].toLower();
+            // Обработка составных имен через дефис (каждая часть должна начинаться с заглавной)
+            if (part.contains('-')) {
+                QStringList hyphenParts = part.split('-');
+                for (QString& hyphenPart : hyphenParts) {
+                    if (!hyphenPart.isEmpty()) {
+                        hyphenPart[0] = hyphenPart[0].toUpper();
+                        
+                        // Остальную часть слова в нижний регистр
+                        for (int i = 1; i < hyphenPart.length(); ++i) {
+                            hyphenPart[i] = hyphenPart[i].toLower();
+                        }
+                    }
+                }
+                part = hyphenParts.join("-");
+            } else {
+                // Обычная обработка для слова
+                part[0] = part[0].toUpper();
+                
+                // Остальную часть слова в нижний регистр
+                for (int i = 1; i < part.length(); ++i) {
+                    part[i] = part[i].toLower();
+                }
             }
         }
     }

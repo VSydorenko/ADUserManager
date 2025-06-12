@@ -1,0 +1,209 @@
+/* ADUserManager - Default стиль приложения */
+/* Современный UI с украинскими акцентами */
+
+/* Глобальные стили */
+QMainWindow, QDialog {
+    background-color: #f0f0f0;
+    color: #333333;
+}
+
+/* Меню и панели инструментов */
+QMenuBar {
+    background-color: #ececec;
+    border-bottom: 1px solid #cccccc;
+}
+
+QMenuBar::item {
+    padding: 4px 12px;
+}
+
+QMenuBar::item:selected {
+    background-color: #005BB5; /* Синий компонент украинского флага */
+    color: white;
+}
+
+QMenu {
+    background-color: white;
+    border: 1px solid #cccccc;
+}
+
+QMenu::item {
+    padding: 6px 24px 6px 28px;
+}
+
+QMenu::item:selected {
+    background-color: #005BB5; /* Синий компонент украинского флага */
+    color: white;
+}
+
+QToolBar {
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #cccccc;
+    spacing: 2px;
+    padding: 2px;
+}
+
+QToolButton {
+    border: 1px solid transparent;
+    padding: 4px;
+    border-radius: 3px;
+}
+
+QToolButton:hover {
+    background-color: #e0e0e0;
+    border: 1px solid #cccccc;
+}
+
+QToolButton:pressed {
+    background-color: #d0d0d0;
+}
+
+QStatusBar {
+    background-color: #ececec;
+    border-top: 1px solid #cccccc;
+}
+
+/* Индикаторы статуса соединения */
+QLabel#connectedStatus {
+    color: #28a745;  /* зелёный для подключенного состояния */
+    font-weight: bold;
+}
+
+QLabel#disconnectedStatus {
+    color: #dc3545;  /* красный для отключенного состояния */
+    font-weight: bold;
+}
+
+/* Кнопки - обычные, первичные и опасные действия */
+QPushButton {
+    background-color: #f0f0f0;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    padding: 6px 12px;
+}
+
+QPushButton:hover {
+    background-color: #e0e0e0;
+}
+
+QPushButton:pressed {
+    background-color: #d0d0d0;
+}
+
+QPushButton:disabled {
+    background-color: #f0f0f0;
+    border: 1px solid #e0e0e0;
+    color: #a0a0a0;
+}
+
+/* Украинские акцентные кнопки */
+QPushButton#primaryButton {
+    background-color: #005BB5; /* Синий */
+    color: white;
+    border: 1px solid #004a99;
+}
+
+QPushButton#primaryButton:hover {
+    background-color: #004a99;
+}
+
+QPushButton#primaryButton:pressed {
+    background-color: #003880;
+}
+
+QPushButton#successButton {
+    background-color: #FFD500; /* Жёлтый */
+    color: #333333;
+    border: 1px solid #e6c100;
+}
+
+QPushButton#successButton:hover {
+    background-color: #e6c100;
+}
+
+QPushButton#successButton:pressed {
+    background-color: #cca900;
+}
+
+QPushButton#dangerButton {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #c82333;
+}
+
+QPushButton#dangerButton:hover {
+    background-color: #c82333;
+}
+
+QPushButton#dangerButton:pressed {
+    background-color: #b21f2d;
+}
+
+QTreeWidget {
+    border: 1px solid #cccccc;
+    background-color: white;
+}
+
+QTreeWidget::item {
+    padding: 4px;
+    height: 24px;
+}
+
+QTreeWidget::item:hover {
+    background-color: #f0f0f0;
+}
+
+QTreeWidget::item:selected {
+    background-color: #007bff;
+    color: white;
+}
+
+QTableWidget {
+    border: 1px solid #cccccc;
+    gridline-color: #e0e0e0;
+}
+
+QTableWidget::item:selected {
+    background-color: #007bff;
+    color: white;
+}
+
+QHeaderView::section {
+    background-color: #ececec;
+    border: 1px solid #cccccc;
+    padding: 4px;
+}
+
+QLineEdit, QTextEdit, QComboBox {
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    padding: 4px;
+    background-color: white;
+}
+
+QLineEdit:focus, QTextEdit:focus, QComboBox:focus {
+    border: 1px solid #007bff;
+}
+
+QProgressBar {
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    text-align: center;
+    background-color: white;
+}
+
+QProgressBar::chunk {
+    background-color: #007bff;
+}
+
+QSplitter::handle {
+    background-color: #cccccc;
+}
+
+QSplitter::handle:horizontal {
+    width: 1px;
+}
+
+QSplitter::handle:vertical {
+    height: 1px;
+}

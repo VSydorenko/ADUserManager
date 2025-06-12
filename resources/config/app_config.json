@@ -8,7 +8,11 @@
   "ad": {
     "domain": "example.local",
     "users_container": "CN=Users",
-    "computers_container": "CN=Computers"
+    "computers_container": "CN=Computers",
+    "server_container": "OU=Servers",
+    "default_user_group": "CN=Users,CN=Builtin",
+    "admin_group": "CN=Administrators,CN=Builtin",
+    "metadata_attribute": "extensionAttribute1"
   },
   "password_policy": {
     "minLength": 12,
@@ -19,5 +23,20 @@
     "includeSymbols": true,
     "excludeChars": "0O1lI",
     "requireEachType": true
+  },
+  "name_processing": {
+    "transliteration_mode": "standard_ukrainian",
+    "capitalize_first_letter": true,
+    "login_prefix": "",
+    "login_suffix": "",
+    "max_login_length": 20,
+    "allow_compound_names": true,
+    "compound_name_delimiter": "-"
+  },
+  "ui": {
+    "theme": "light",
+    "language": "ua",
+    "expand_server_tree": true,
+    "auto_refresh_interval": 300
   }
 }

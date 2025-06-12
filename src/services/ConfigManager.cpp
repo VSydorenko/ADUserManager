@@ -163,6 +163,42 @@ QString ConfigManager::getAdComputersContainer() const {
     return adConfig.value("computers_container").toString("CN=Computers");
 }
 
+QString ConfigManager::getAdServerContainer() const {
+    if (!m_config.contains("ad") || !m_config["ad"].isObject()) {
+        return "OU=Servers";
+    }
+    
+    QJsonObject adConfig = m_config["ad"].toObject();
+    return adConfig.value("server_container").toString("OU=Servers");
+}
+
+QString ConfigManager::getAdDefaultUserGroup() const {
+    if (!m_config.contains("ad") || !m_config["ad"].isObject()) {
+        return "CN=Users,CN=Builtin";
+    }
+    
+    QJsonObject adConfig = m_config["ad"].toObject();
+    return adConfig.value("default_user_group").toString("CN=Users,CN=Builtin");
+}
+
+QString ConfigManager::getAdAdminGroup() const {
+    if (!m_config.contains("ad") || !m_config["ad"].isObject()) {
+        return "CN=Administrators,CN=Builtin";
+    }
+    
+    QJsonObject adConfig = m_config["ad"].toObject();
+    return adConfig.value("admin_group").toString("CN=Administrators,CN=Builtin");
+}
+
+QString ConfigManager::getAdMetadataAttribute() const {
+    if (!m_config.contains("ad") || !m_config["ad"].isObject()) {
+        return "extensionAttribute1";
+    }
+    
+    QJsonObject adConfig = m_config["ad"].toObject();
+    return adConfig.value("metadata_attribute").toString("extensionAttribute1");
+}
+
 void ConfigManager::setAdDomain(const QString& domain) {
     QJsonObject adConfig = m_config.value("ad").toObject();
     adConfig["domain"] = domain;
@@ -178,6 +214,46 @@ void ConfigManager::setAdUsersContainer(const QString& container) {
 void ConfigManager::setAdComputersContainer(const QString& container) {
     QJsonObject adConfig = m_config.value("ad").toObject();
     adConfig["computers_container"] = container;
+    m_config["ad"] = adConfig;
+}
+
+void ConfigManager::setAdServerContainer(const QString& container) {
+    if (!m_config.contains("ad") || !m_config["ad"].isObject()) {
+        m_config["ad"] = QJsonObject();
+    }
+    
+    QJsonObject adConfig = m_config["ad"].toObject();
+    adConfig["server_container"] = container;
+    m_config["ad"] = adConfig;
+}
+
+void ConfigManager::setAdDefaultUserGroup(const QString& group) {
+    if (!m_config.contains("ad") || !m_config["ad"].isObject()) {
+        m_config["ad"] = QJsonObject();
+    }
+    
+    QJsonObject adConfig = m_config["ad"].toObject();
+    adConfig["default_user_group"] = group;
+    m_config["ad"] = adConfig;
+}
+
+void ConfigManager::setAdAdminGroup(const QString& group) {
+    if (!m_config.contains("ad") || !m_config["ad"].isObject()) {
+        m_config["ad"] = QJsonObject();
+    }
+    
+    QJsonObject adConfig = m_config["ad"].toObject();
+    adConfig["admin_group"] = group;
+    m_config["ad"] = adConfig;
+}
+
+void ConfigManager::setAdMetadataAttribute(const QString& attribute) {
+    if (!m_config.contains("ad") || !m_config["ad"].isObject()) {
+        m_config["ad"] = QJsonObject();
+    }
+    
+    QJsonObject adConfig = m_config["ad"].toObject();
+    adConfig["metadata_attribute"] = attribute;
     m_config["ad"] = adConfig;
 }
 
@@ -235,6 +311,10 @@ void ConfigManager::initializeDefaultConfig() {
     adConfig["domain"] = "example.local";
     adConfig["users_container"] = "CN=Users";
     adConfig["computers_container"] = "CN=Computers";
+    adConfig["server_container"] = "OU=Servers";
+    adConfig["default_user_group"] = "CN=Users,CN=Builtin";
+    adConfig["admin_group"] = "CN=Administrators,CN=Builtin";
+    adConfig["metadata_attribute"] = "extensionAttribute1";
     config["ad"] = adConfig;
     
     // Password policy
@@ -249,5 +329,237 @@ void ConfigManager::initializeDefaultConfig() {
     passwordPolicy["requireEachType"] = true;
     config["password_policy"] = passwordPolicy;
     
+    // Name processing settings
+    QJsonObject nameConfig;
+    nameConfig["transliteration_mode"] = "standard_ukrainian";
+    nameConfig["capitalize_first_letter"] = true;
+    nameConfig["login_prefix"] = "";
+    nameConfig["login_suffix"] = "";
+    nameConfig["max_login_length"] = 20;
+    nameConfig["allow_compound_names"] = true;
+    nameConfig["compound_name_delimiter"] = "-";
+    config["name_processing"] = nameConfig;
+    
+    // UI settings
+    QJsonObject uiConfig;
+    uiConfig["theme"] = "light";
+    uiConfig["language"] = "ua";
+    uiConfig["expand_server_tree"] = true;
+    uiConfig["auto_refresh_interval"] = 300;
+    config["ui"] = uiConfig;
+    
     m_config = config;
+}
+
+// Name Processing Methods
+
+QString ConfigManager::getTransliterationMode() const {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        return "standard_ukrainian";
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    return nameConfig.value("transliteration_mode").toString("standard_ukrainian");
+}
+
+bool ConfigManager::getCapitalizeFirstLetter() const {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        return true;
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    return nameConfig.value("capitalize_first_letter").toBool(true);
+}
+
+QString ConfigManager::getLoginPrefix() const {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        return "";
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    return nameConfig.value("login_prefix").toString("");
+}
+
+QString ConfigManager::getLoginSuffix() const {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        return "";
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    return nameConfig.value("login_suffix").toString("");
+}
+
+int ConfigManager::getMaxLoginLength() const {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        return 20;
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    return nameConfig.value("max_login_length").toInt(20);
+}
+
+bool ConfigManager::getAllowCompoundNames() const {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        return true;
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    return nameConfig.value("allow_compound_names").toBool(true);
+}
+
+QString ConfigManager::getCompoundNameDelimiter() const {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        return "-";
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    return nameConfig.value("compound_name_delimiter").toString("-");
+}
+
+void ConfigManager::setTransliterationMode(const QString& mode) {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        m_config["name_processing"] = QJsonObject();
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    nameConfig["transliteration_mode"] = mode;
+    m_config["name_processing"] = nameConfig;
+}
+
+void ConfigManager::setCapitalizeFirstLetter(bool capitalize) {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        m_config["name_processing"] = QJsonObject();
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    nameConfig["capitalize_first_letter"] = capitalize;
+    m_config["name_processing"] = nameConfig;
+}
+
+void ConfigManager::setLoginPrefix(const QString& prefix) {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        m_config["name_processing"] = QJsonObject();
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    nameConfig["login_prefix"] = prefix;
+    m_config["name_processing"] = nameConfig;
+}
+
+void ConfigManager::setLoginSuffix(const QString& suffix) {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        m_config["name_processing"] = QJsonObject();
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    nameConfig["login_suffix"] = suffix;
+    m_config["name_processing"] = nameConfig;
+}
+
+void ConfigManager::setMaxLoginLength(int length) {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        m_config["name_processing"] = QJsonObject();
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    nameConfig["max_login_length"] = length;
+    m_config["name_processing"] = nameConfig;
+}
+
+void ConfigManager::setAllowCompoundNames(bool allow) {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        m_config["name_processing"] = QJsonObject();
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    nameConfig["allow_compound_names"] = allow;
+    m_config["name_processing"] = nameConfig;
+}
+
+void ConfigManager::setCompoundNameDelimiter(const QString& delimiter) {
+    if (!m_config.contains("name_processing") || !m_config["name_processing"].isObject()) {
+        m_config["name_processing"] = QJsonObject();
+    }
+    
+    QJsonObject nameConfig = m_config["name_processing"].toObject();
+    nameConfig["compound_name_delimiter"] = delimiter;
+    m_config["name_processing"] = nameConfig;
+}
+
+// UI Settings Methods
+
+QString ConfigManager::getUiTheme() const {
+    if (!m_config.contains("ui") || !m_config["ui"].isObject()) {
+        return "light";
+    }
+    
+    QJsonObject uiConfig = m_config["ui"].toObject();
+    return uiConfig.value("theme").toString("light");
+}
+
+QString ConfigManager::getUiLanguage() const {
+    if (!m_config.contains("ui") || !m_config["ui"].isObject()) {
+        return "ua";
+    }
+    
+    QJsonObject uiConfig = m_config["ui"].toObject();
+    return uiConfig.value("language").toString("ua");
+}
+
+bool ConfigManager::getExpandServerTree() const {
+    if (!m_config.contains("ui") || !m_config["ui"].isObject()) {
+        return true;
+    }
+    
+    QJsonObject uiConfig = m_config["ui"].toObject();
+    return uiConfig.value("expand_server_tree").toBool(true);
+}
+
+int ConfigManager::getAutoRefreshInterval() const {
+    if (!m_config.contains("ui") || !m_config["ui"].isObject()) {
+        return 300;
+    }
+    
+    QJsonObject uiConfig = m_config["ui"].toObject();
+    return uiConfig.value("auto_refresh_interval").toInt(300);
+}
+
+void ConfigManager::setUiTheme(const QString& theme) {
+    if (!m_config.contains("ui") || !m_config["ui"].isObject()) {
+        m_config["ui"] = QJsonObject();
+    }
+    
+    QJsonObject uiConfig = m_config["ui"].toObject();
+    uiConfig["theme"] = theme;
+    m_config["ui"] = uiConfig;
+}
+
+void ConfigManager::setUiLanguage(const QString& language) {
+    if (!m_config.contains("ui") || !m_config["ui"].isObject()) {
+        m_config["ui"] = QJsonObject();
+    }
+    
+    QJsonObject uiConfig = m_config["ui"].toObject();
+    uiConfig["language"] = language;
+    m_config["ui"] = uiConfig;
+}
+
+void ConfigManager::setExpandServerTree(bool expand) {
+    if (!m_config.contains("ui") || !m_config["ui"].isObject()) {
+        m_config["ui"] = QJsonObject();
+    }
+    
+    QJsonObject uiConfig = m_config["ui"].toObject();
+    uiConfig["expand_server_tree"] = expand;
+    m_config["ui"] = uiConfig;
+}
+
+void ConfigManager::setAutoRefreshInterval(int interval) {
+    if (!m_config.contains("ui") || !m_config["ui"].isObject()) {
+        m_config["ui"] = QJsonObject();
+    }
+    
+    QJsonObject uiConfig = m_config["ui"].toObject();
+    uiConfig["auto_refresh_interval"] = interval;
+    m_config["ui"] = uiConfig;
 }
